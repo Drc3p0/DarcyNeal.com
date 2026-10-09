@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Darcy Neal — Interactive Hardware Design</title>
 <meta name="description" content="Darcy Neal is an interactive audio-visual hardware designer and educator. Wearables, PCB art, installations, and the workshops that teach them.">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@300;400&family=Work+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@300;400&family=Azeret+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -14,7 +14,7 @@
   <div class="logo mono">DARCY NEAL</div>
   <div class="nav-right">
     <div class="nav-links mono">
-      <a href="index.html" class="active">CREATIONS</a>
+      <a href="work.html">CREATIONS</a>
       <a href="workshops.html">WORKSHOPS</a>
       <a href="music.html">MUSIC</a>
       <a href="about.html">ABOUT</a>
@@ -29,31 +29,50 @@
   <div class="meta mono">Portland, OR &middot; SporkLogic &middot; Crowd Supply &middot; PCC Makerspace (5 yrs)</div>
 </div>
 
-<div class="section" id="work">
-  <div class="section-label mono">SELECTED WORK</div>
-  <div class="work-grid" data-work-grid>
-    <!-- populated by js/site.js from data/portfolio.js -->
+<div class="section section-centered" id="work">
+  <h2 class="display-font section-heading reveal">See the latest &amp; greatest</h2>
+  <div class="work-grid reveal-group" data-work-grid data-work-grid-limit="3">
+    <!-- populated by js/site.js from data/portfolio.js, first 3 entries only -->
+  </div>
+  <a href="work.html" class="btn-pill btn-pill-centered reveal">View all work &rarr;</a>
+</div>
+
+<div class="chapter-strip chapter-strip--tint reveal" id="workshops-chapter">
+  <div class="label mono">WORKSHOPS</div>
+  <div class="content">
+    <h2 class="display-font">Hands-on electronics, taught in person</h2>
+    <p>Soldering and circuit workshops run at hacker cons, maker fairs, and artist residencies worldwide, scaled from small studio groups to 50-student sessions.</p>
+    <div class="venues mono">DEF CON &middot; HOPE &middot; ToorCamp &middot; Chaos Communication Congress &middot; Open Hardware Summit &middot; Bay Area Maker Faire</div>
+    <a href="workshops.html" class="btn-pill">See all workshops &rarr;</a>
+  </div>
+  <div class="chapter-media">
+    <img src="images/emf-badge/emf-badge-in-hand.jpg" alt="EMF Explorer workshop badge, held in hand" loading="lazy">
   </div>
 </div>
 
-<div class="about-strip">
+<div class="chapter-strip reveal" id="music-chapter">
+  <div class="label mono">MUSIC</div>
+  <div class="content">
+    <h2 class="display-font">Dark ambient &amp; sound-reactive hardware</h2>
+    <p>Dark ambient and performance collaborations, including sound-reactive work built for the Flaming Lips&rsquo; live shows. The music page itself is still coming together.</p>
+    <a href="music.html" class="btn-pill">See what&rsquo;s there &rarr;</a>
+  </div>
+</div>
+
+<div class="chapter-strip chapter-strip--tint reveal" id="dayjob-chapter">
+  <div class="label mono">DAY JOB</div>
+  <div class="content">
+    <h2 class="display-font">Crowd Supply</h2>
+    <p>Campaign Project Manager at Crowd Supply, helping open-source hardware creators launch and fund their own products.</p>
+    <a href="https://www.crowdsupply.com/" class="btn-pill" target="_blank" rel="noopener">crowdsupply.com &rarr;</a>
+  </div>
+</div>
+
+<div class="about-strip reveal">
   <div class="label mono">ABOUT</div>
   <div class="content">
     <p>Founder of SporkLogic. Background spans animatronic fabrication, boutique synthesizer production at 4MS Company, and five years directing Portland Community College&rsquo;s makerspace.</p>
-    <a href="about.html">Read the full bio &rarr;</a>
-  </div>
-</div>
-
-<div class="teaser-grid">
-  <div class="teaser-card">
-    <div class="label mono">WORKSHOPS</div>
-    <p>Hands-on electronics and soldering, from beginner-friendly to advanced builds, taught at cons, fairs, and residencies worldwide.</p>
-    <a href="workshops.html">See workshops &rarr;</a>
-  </div>
-  <div class="teaser-card">
-    <div class="label mono">MUSIC</div>
-    <p>Dark ambient and performance collaborations, including sound-reactive work built for touring artists.</p>
-    <a href="music.html">Listen &rarr;</a>
+    <a href="about.html" class="btn-pill">Read the full bio &rarr;</a>
   </div>
 </div>
 
@@ -65,5 +84,6 @@
 <script src="data/portfolio.js"></script>
 <script src="js/theme.js"></script>
 <script src="js/site.js"></script>
+<script src="js/reveal.js"></script>
 </body>
 </html>

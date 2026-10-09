@@ -68,11 +68,11 @@ window.PORTFOLIO = [
       "The project was created during the Research at Scale residency in Shenzhen, China, hosted by [Chaihuo Makerspace](https://www.seeedstudio.com/chaihuo-makerspace) and sponsored by Seeed Studio, and organized by the MIT Media Lab. The entire build, from concept to working prototype, was completed in under three weeks. Working at the center of global electronics manufacturing meant parts, fabrication, and iteration happened at a pace that would be impossible elsewhere.",
       "More about the residency: [media.mit.edu/posts/research-at-scale](https://www.media.mit.edu/posts/research-at-scale/)"
     ],
-    heroImage: "images/emf-explorer-deluxe/IMG_3790.png",
+    heroImage: "images/emf-explorer-deluxe/IMG_3790.jpg",
     gallery: [
-      "images/emf-explorer-deluxe/IMG_3791.png",
-      "images/emf-explorer-deluxe/IMG_3839.png",
-      "images/emf-explorer-deluxe/IMG_9477.png"
+      "images/emf-explorer-deluxe/IMG_3791.jpg",
+      "images/emf-explorer-deluxe/IMG_3839.jpg",
+      "images/emf-explorer-deluxe/IMG_9477.jpg"
     ]
   },
   {
@@ -171,11 +171,11 @@ window.PORTFOLIO = [
     ],
     heroImage: "images/freeform-led-workshop/IMG_5289.png",
     gallery: [
-      "images/freeform-led-workshop/IMG_5296.png",
-      "images/freeform-led-workshop/IMG_5298.png",
-      "images/freeform-led-workshop/IMG_5304.png",
-      "images/freeform-led-workshop/IMG_5307.png",
-      "images/freeform-led-workshop/IMG_5308.png"
+      "images/freeform-led-workshop/IMG_5296.jpg",
+      "images/freeform-led-workshop/IMG_5298.jpg",
+      "images/freeform-led-workshop/IMG_5304.jpg",
+      "images/freeform-led-workshop/IMG_5307.jpg",
+      "images/freeform-led-workshop/IMG_5308.jpg"
     ],
     video: "images/freeform-led-workshop/freeform-led-workshop.mp4"
   }

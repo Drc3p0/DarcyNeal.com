@@ -9,23 +9,38 @@
  * No build step: plain CSS, loaded with a <link> tag on every page.
  */
 
-/* ---------- Design tokens ---------- */
+/* ---------- Design tokens ----------
+ * Lifted from the actual Allier Ho palette (allierho.com /
+ * styles.refero.design), not invented: Press Black / Charcoal Trace /
+ * Warm Paper / Ash are Allier Ho's own neutral tokens, Dusty Mauve and
+ * Pale Sage are its two chromatic accents. Allier Ho itself ships one
+ * light theme only; dark is our extrapolation using its own neutral
+ * ramp, contrast-checked (see chat for the numbers) rather than guessed.
+ * Pale Sage leads as the accent in dark mode and Dusty Mauve in light,
+ * since mauve only reaches 2.6-2.9:1 on the dark neutrals (fails AA)
+ * while sage clears 11-13:1 on them; mauve still appears in dark mode
+ * as a large panel fill, just not as small text/borders.
+ */
 :root {
-  --bg: #17161A;
-  --surface: #201F24;
-  --text: #F2F0EA;
-  --text-muted: #9C9A93;
-  --border: #34323A;
-  --accent: #c5965a;
+  --bg: #1c1c1c;        /* Press Black */
+  --surface: #262626;   /* Charcoal Trace */
+  --text: #fcfcfc;      /* Warm Paper, reused as ink on dark */
+  --text-muted: #a8a8a8;/* Ash — 7.17:1 on Press Black */
+  --border: #3a3a3a;    /* interpolated hairline, Allier Ho has no dark border token */
+  --accent: #cee6cc;    /* Pale Sage — 12.83:1 on Press Black */
+  --accent-panel: #6c5f7d; /* Dusty Mauve, reserved for large fills, not text/borders, in dark mode */
+  --shadow-strong: rgba(0, 0, 0, 0.55);
 }
 
 :root[data-theme="light"] {
-  --bg: #FAFAF8;
-  --surface: #FFFFFF;
-  --text: #1A1A18;
-  --text-muted: #726F66;
-  --border: #E4E2D9;
-  --accent: #8F6631;
+  --bg: #fcfcfc;         /* Warm Paper, exact */
+  --surface: #fcfcfc;    /* Allier Ho uses the same flat paper for cards, no separate surface tone */
+  --text: #000000;       /* Deep Ink, exact */
+  --text-muted: #737373; /* Ash #a8a8a8 only hits 2.32:1 on paper (fails AA); darkened to 4.62:1 */
+  --border: #a8a8a8;     /* Ash, exact — used for hairlines, not text, so the AA note above doesn't apply */
+  --accent: #6c5f7d;     /* Dusty Mauve, exact */
+  --accent-panel: #6c5f7d;
+  --shadow-strong: rgba(28, 28, 28, 0.18);
 }
 
 /* ---------- Reset ---------- */
@@ -34,20 +49,58 @@ html, body { margin: 0; padding: 0; }
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  /* Allier Ho's signature pairing: Azeret Mono carries BOTH body copy and
+     labels (not a separate sans body font) against the Crimson Pro display
+     serif. System sans is reserved for nav links / micro-labels only. */
+  font-family: 'Azeret Mono', 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
   transition: background 0.15s, color 0.15s;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 img { max-width: 100%; display: block; }
-a { color: var(--accent); text-decoration: none; }
+a { color: var(--accent); text-decoration: none; text-underline-offset: 3px; }
 a:hover { text-decoration: underline; }
+
+/* Pill outline button: transparent at rest, 1px border, 200px radius
+   (Allier Ho's actual spec). Fills solid with the accent on hover per
+   your call, departing from the reference's own "never fill" rule, for
+   a clearer, higher-impact click affordance. */
+.btn-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  border-radius: 200px;
+  padding: 10px 22px;
+  font-family: 'Azeret Mono', 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 12px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  text-decoration: none;
+  background: transparent;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+.btn-pill:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg);
+  text-decoration: none;
+}
 p { margin: 0; }
 h1, h2, h3 { margin: 0; }
 
-.mono { font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace; }
-.body-font { font-family: 'Work Sans', -apple-system, sans-serif; }
+.mono {
+  /* Deliberate deviation from Allier Ho here: their own nav/tags use a
+     neutral system sans, with mono reserved for body only. Your design
+     doc calls mono-for-labels "a direct, honest nod to schematics and
+     code" specifically for you, so this demo keeps mono on nav/tags too,
+     both body and labels, and lets Crimson Pro carry 100% of the serif
+     contrast instead. */
+  font-family: 'Azeret Mono', 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
+}
+.body-font { font-family: 'Azeret Mono', 'IBM Plex Mono', ui-monospace, monospace; }
 .display-font { font-family: 'Crimson Pro', Georgia, serif; font-weight: 300; }
 
 .visually-hidden {
@@ -105,13 +158,30 @@ h1, h2, h3 { margin: 0; }
   display: flex;
   flex-direction: column;
   gap: 20px;
-  padding: 96px 64px 80px;
+  padding: 120px 64px 88px;
   max-width: 900px;
 }
+
+/* ---------- Scroll reveal (demo) ---------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.7s cubic-bezier(0.2, 0.7, 0.2, 1), transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+.reveal-group .reveal:nth-child(2) { transition-delay: 0.08s; }
+.reveal-group .reveal:nth-child(3) { transition-delay: 0.16s; }
+.reveal-group .reveal:nth-child(4) { transition-delay: 0.24s; }
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+}
 .hero h1 {
-  font-size: 64px;
-  letter-spacing: -1px;
-  line-height: 1.05;
+  font-size: 76px;
+  letter-spacing: -2.4px;
+  line-height: 1.0;
 }
 .hero p.lede {
   font-size: 20px;
@@ -136,45 +206,85 @@ h1, h2, h3 { margin: 0; }
 
 /* ---------- Work / card grid ---------- */
 .section {
-  padding: 0 64px 96px;
+  padding: 0 64px 120px;
+}
+/* Home's curated teaser, modeled on Allier Ho's "See the latest &
+   greatest" home section: centered heading, a small grid, one button
+   below, rather than the full archive this page used to show inline. */
+.section-centered {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 40px;
+}
+.section-centered .work-grid { width: 100%; padding-top: 0; }
+.section-heading {
+  font-size: 44px;
+  font-weight: 300;
+  letter-spacing: -1.2px;
+  line-height: 1.1;
+  max-width: 640px;
+}
+.btn-pill-centered { align-self: center; }
+
+/* "More work" strip at the bottom of a project detail page */
+.more-work {
+  margin-top: 80px;
+  padding-top: 64px;
+  border-top: 1px solid var(--border);
 }
 .work-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 32px;
-  padding-top: 32px;
+  gap: 40px;
+  padding-top: 40px;
 }
 .card {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
   color: var(--text);
 }
 .card:hover { text-decoration: none; }
 .card-image {
+  /* Full-bleed, borderless imagery: the photo is the component, no frame
+     around it. Background is only a placeholder tint while it loads.
+     Hover elevation + zoom live on this wrapper so they don't fight the
+     always-on Ken Burns animation on the img inside (two separate
+     transformed elements compose cleanly; one element can't run a CSS
+     animation and a hover transition on the same property smoothly). */
   overflow: hidden;
   width: 100%;
   aspect-ratio: 4 / 3;
   background: var(--surface);
-  border: 1px solid var(--border);
+  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.5s ease;
+}
+.card:hover .card-image {
+  transform: scale(1.035);
+  box-shadow: 0 28px 56px -20px var(--shadow-strong);
+  z-index: 1;
 }
 .card-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  /* Slight continuous animation on every image, a CSS Ken Burns drift
+     rather than per-photo GIFs: same "it's alive" effect at a few bytes
+     of CSS instead of re-exporting dozens of photos as animated files. */
+  animation: kenburns 26s ease-in-out infinite alternate;
 }
-.card:hover .card-image img { transform: scale(1.05); }
 @media (prefers-reduced-motion: reduce) {
-  .card-image img { transition: none; }
+  .card-image, .card-image img { transition: none; animation: none; }
 }
 .card-tag {
   font-size: 12px;
   color: var(--accent);
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
 }
 .card-title {
-  font-size: 22px;
+  font-size: 25px;
+  letter-spacing: -0.3px;
 }
 .card-desc {
   font-size: 14px;
@@ -183,11 +293,15 @@ h1, h2, h3 { margin: 0; }
 }
 
 /* ---------- About snippet (home) ---------- */
+/* Full-bleed surface-tinted band: depth from a color shift, not a shadow or
+   a border, so this section reads as distinct even at a glance or mid-scroll. */
 .about-strip {
   display: flex;
   gap: 64px;
-  padding: 80px 64px;
+  padding: 100px 64px;
+  background: var(--surface);
   border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
 }
 .about-strip .label {
   font-size: 13px;
@@ -199,11 +313,11 @@ h1, h2, h3 { margin: 0; }
 .about-strip .content {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
   max-width: 640px;
 }
 .about-strip .content p {
-  font-size: 17px;
+  font-size: 18px;
   line-height: 1.6;
 }
 
@@ -212,32 +326,93 @@ h1, h2, h3 { margin: 0; }
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 32px;
-  padding: 0 64px 96px;
+  padding: 0 64px 120px;
 }
 .teaser-card {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 32px;
-  border: 1px solid var(--border);
+  gap: 14px;
+  padding: 40px;
+  background: var(--surface);
 }
 .teaser-card .label {
   font-size: 12px;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
   color: var(--accent);
 }
 .teaser-card p {
   font-size: 15px;
   line-height: 1.5;
 }
-.teaser-card a { font-size: 13px; margin-top: 4px; }
+.teaser-card .btn-pill { align-self: flex-start; margin-top: 6px; }
+
+/* ---------- Chapter strip (home: workshops / music / day job) ---------- */
+/* Same label-column + content rhythm as .about-strip (left label, right
+   copy, hairline top border), with an optional media column so a chapter
+   with a real photo (workshops) reads differently from one that's text
+   only (music, day job) without forcing a placeholder image either way. */
+.chapter-strip {
+  display: flex;
+  gap: 64px;
+  padding: 96px 64px;
+  border-top: 1px solid var(--border);
+}
+.chapter-strip--tint { background: var(--surface); }
+.chapter-strip .label {
+  font-size: 13px;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  width: 160px;
+  flex-shrink: 0;
+  padding-top: 4px;
+}
+.chapter-strip .content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 600px;
+}
+.chapter-strip .content h2 {
+  font-size: 32px;
+  font-weight: 300;
+  letter-spacing: -0.8px;
+  line-height: 1.15;
+}
+.chapter-strip .content p {
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--text);
+}
+.chapter-strip .content .venues {
+  font-size: 12px;
+  letter-spacing: 0.4px;
+  color: var(--text-muted);
+}
+.chapter-strip .content .btn-pill { align-self: flex-start; margin-top: 4px; }
+.chapter-media {
+  flex: 1;
+  max-width: 420px;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--surface);
+  align-self: flex-start;
+}
+.chapter-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  animation: kenburns 26s ease-in-out infinite alternate;
+}
+@media (prefers-reduced-motion: reduce) {
+  .chapter-media img { animation: none; }
+}
 
 /* ---------- Page header (about / workshops / creations) ---------- */
 .page-header {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  padding: 72px 64px 56px;
+  gap: 18px;
+  padding: 88px 64px 64px;
   max-width: 780px;
 }
 .page-header .eyebrow {
@@ -246,9 +421,9 @@ h1, h2, h3 { margin: 0; }
   color: var(--accent);
 }
 .page-header h1 {
-  font-size: 48px;
-  letter-spacing: -0.5px;
-  line-height: 1.1;
+  font-size: 56px;
+  letter-spacing: -1.6px;
+  line-height: 1.05;
 }
 .page-header p.dek {
   font-size: 17px;
@@ -269,7 +444,6 @@ h1, h2, h3 { margin: 0; }
   flex-shrink: 0;
   overflow: hidden;
   background: var(--surface);
-  border: 1px solid var(--border);
 }
 .about-portrait img { width: 100%; height: 100%; object-fit: cover; }
 .about-bio {
@@ -286,26 +460,26 @@ h1, h2, h3 { margin: 0; }
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 32px;
-  padding: 0 64px 96px;
+  padding: 0 64px 120px;
 }
 .workshop-card {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 32px;
-  border: 1px solid var(--border);
+  gap: 14px;
+  padding: 40px;
+  background: var(--surface);
 }
 .workshop-card .thumb {
   width: 100%;
-  height: 180px;
+  height: 200px;
   overflow: hidden;
-  background: var(--surface);
-  border: 1px solid var(--border);
+  background: var(--bg);
 }
 .workshop-card .thumb img { width: 100%; height: 100%; object-fit: cover; }
 .workshop-card h3 {
-  font-size: 22px;
-  font-weight: 400;
+  font-size: 24px;
+  font-weight: 300;
+  letter-spacing: -0.3px;
 }
 .workshop-card p {
   font-size: 14px;
@@ -322,7 +496,7 @@ h1, h2, h3 { margin: 0; }
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding: 72px 64px 48px;
+  padding: 88px 64px 48px;
   max-width: 780px;
 }
 .post-header .eyebrow {
@@ -331,9 +505,9 @@ h1, h2, h3 { margin: 0; }
   color: var(--accent);
 }
 .post-header h1 {
-  font-size: 48px;
-  letter-spacing: -0.5px;
-  line-height: 1.1;
+  font-size: 56px;
+  letter-spacing: -1.6px;
+  line-height: 1.05;
 }
 .post-header .meta {
   font-size: 13px;
@@ -393,7 +567,6 @@ h1, h2, h3 { margin: 0; }
 .post-gallery figure {
   margin: 0;
   overflow: hidden;
-  border: 1px solid var(--border);
   background: var(--surface);
 }
 .post-gallery img {
@@ -442,8 +615,9 @@ h1, h2, h3 { margin: 0; }
 }
 .post-tags .tag {
   font-size: 12px;
-  padding: 6px 14px;
+  padding: 8px 18px;
   border: 1px solid var(--accent);
+  border-radius: 200px;
   color: var(--accent);
 }
 
@@ -471,7 +645,8 @@ h1, h2, h3 { margin: 0; }
 @media (max-width: 960px) {
   .site-nav, .hero, .section, .about-strip, .teaser-grid,
   .page-header, .about-main, .workshop-grid, .post-header,
-  .post-body-wrap, .post-gallery, .post-videos, .post-tags, .site-footer {
+  .post-body-wrap, .post-gallery, .post-videos, .post-tags, .site-footer,
+  .chapter-strip {
     padding-left: 24px;
     padding-right: 24px;
   }
@@ -479,7 +654,8 @@ h1, h2, h3 { margin: 0; }
   .teaser-grid, .workshop-grid { grid-template-columns: 1fr; }
   .about-main { flex-direction: column; }
   .about-portrait { width: 100%; height: 280px; }
-  .about-strip, .post-body-wrap { flex-direction: column; gap: 20px; }
+  .about-strip, .post-body-wrap, .chapter-strip { flex-direction: column; gap: 20px; }
+  .chapter-media { max-width: 100%; }
   .hero h1 { font-size: 44px; }
   .page-header h1, .post-header h1 { font-size: 36px; }
 }
