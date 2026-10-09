@@ -44,6 +44,32 @@
     return 'https://www.youtube.com/embed/' + id;
   }
 
+  function getContentValue(path) {
+    var parts = path.split('.');
+    var node = window.SITE_CONTENT || {};
+    for (var i = 0; i < parts.length; i++) {
+      if (node == null) return undefined;
+      node = node[parts[i]];
+    }
+    return node;
+  }
+
+  function renderSiteContent() {
+    // Fills in every [data-content]/[data-content-href] element from
+    // window.SITE_CONTENT (data/site-content.js), so editing the
+    // homepage's copy is a matter of editing that one data file instead
+    // of hunting through index.html. Text only (no markup interpreted),
+    // same spirit as the work-grid rendering above.
+    document.querySelectorAll('[data-content]').forEach(function (el) {
+      var value = getContentValue(el.getAttribute('data-content'));
+      if (value !== undefined) el.textContent = value;
+    });
+    document.querySelectorAll('[data-content-href]').forEach(function (el) {
+      var value = getContentValue(el.getAttribute('data-content-href'));
+      if (value !== undefined) el.setAttribute('href', value);
+    });
+  }
+
   function findEntry(slug) {
     var list = window.PORTFOLIO || [];
     for (var i = 0; i < list.length; i++) {
@@ -54,7 +80,7 @@
 
   function cardHtml(entry) {
     return (
-      '<a class="card" href="creation.html?slug=' + encodeURIComponent(entry.slug) + '">' +
+      '<a class="card reveal" href="creation.html?slug=' + encodeURIComponent(entry.slug) + '">' +
         '<div class="card-image"><img src="' + escapeHtml(entry.heroImage) + '" alt="' + escapeHtml(entry.title) + '" loading="lazy"></div>' +
         '<div class="card-tag mono">' + escapeHtml(entry.tag) + '</div>' +
         '<div class="card-title display-font">' + escapeHtml(entry.title) + '</div>' +
@@ -64,10 +90,19 @@
   }
 
   function renderWorkGrid() {
-    var grid = document.querySelector('[data-work-grid]');
-    if (!grid) return;
-    var list = window.PORTFOLIO || [];
-    grid.innerHTML = list.map(cardHtml).join('');
+    // Supports more than one grid per page with different slices of the
+    // same data: the home teaser (data-work-grid-limit="3"), the full
+    // archive on work.html (no limit), and the "more work" strip on a
+    // project detail page (data-work-grid-exclude="<slug>").
+    var grids = document.querySelectorAll('[data-work-grid]');
+    grids.forEach(function (grid) {
+      var list = window.PORTFOLIO || [];
+      var exclude = grid.getAttribute('data-work-grid-exclude');
+      if (exclude) list = list.filter(function (e) { return e.slug !== exclude; });
+      var limit = parseInt(grid.getAttribute('data-work-grid-limit'), 10);
+      if (!isNaN(limit)) list = list.slice(0, limit);
+      grid.innerHTML = list.map(cardHtml).join('');
+    });
   }
 
   function renderPost() {
@@ -143,12 +178,21 @@
       '</div>' +
       galleryHtml +
       videosHtml +
-      '<div class="post-tags"><div class="tag mono">' + escapeHtml(entry.tag.split(' ')[0].replace('·', '').trim() || entry.tag) + '</div></div>';
+      '<div class="post-tags"><div class="tag mono">' + escapeHtml(entry.tag.split(' ')[0].replace('·', '').trim() || entry.tag) + '</div></div>' +
+      '<div class="section more-work">' +
+        '<div class="section-label mono reveal">MORE WORK</div>' +
+        '<div class="work-grid reveal-group" data-work-grid data-work-grid-exclude="' + escapeHtml(entry.slug) + '"></div>' +
+      '</div>';
   }
 
   function init() {
-    renderWorkGrid();
+    // renderPost() first: on a project page it injects an empty "more
+    // work" grid container with the current slug to exclude, which the
+    // renderWorkGrid() pass right after then finds and fills, same as
+    // every other [data-work-grid] on the page.
+    renderSiteContent();
     renderPost();
+    renderWorkGrid();
   }
 
   if (document.readyState === 'loading') {
